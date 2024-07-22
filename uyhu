@@ -1,0 +1,16 @@
+<configuration>
+  <appSettings>
+    <add key="IpWhiteList" value="127.0.0.1,192.168.1.1" />
+  </appSettings>
+  <system.web>
+    <httpModules>
+      <add name="IpFilter" type="TestAsmxProject.Filter.HTTP.IpFilter"/>
+    </httpModules>
+  </system.web>
+  <system.webServer>
+    <validation validateIntegratedModeConfiguration="false" />
+    <modules runAllManagedModulesForAllRequests="true">
+      <add name="IpFilter" type="TestAsmxProject.Filter.HTTP.IpFilter"/>
+    </modules>
+  </system.webServer>
+</configuration>
