@@ -1,0 +1,72 @@
+//string.cpp
+#include "string.h"
+namespace mystr {
+	string::string(const char* str):_size(strlen(str)) {
+		_str = new char[_size + 1];
+		_capacity = _size;
+		strcpy(_str, str);
+	}
+	string::string(const string& s) {
+		string temp(s._str);
+		swap(temp);
+	}
+	void string::reserve(size_t n) {
+		if (_capacity < n) {
+			char* temp = new char[n + 1];
+			strcpy(temp, _str);
+			delete[] _str;
+			_str = temp;
+			_capacity = n;
+		}
+	}
+	void string::insert(size_t pos, char ch) {
+		assert(pos <= _size);
+		if (_size == _capacity) {
+			size_t newcapacity = _capacity == 0 ? 4 : 2 * _capacity;
+			reserve(newcapacity);
+		}
+		size_t end = _size + 1;
+		while (end > pos) _str[end] = _str[end - 1], --end;
+		_str[pos] = ch;
+		_size++;
+	}
+	void string::insert(size_t pos, const char* str) {
+		assert(pos <= _size);
+		size_t len = strlen(str);
+		if (_size + len > _capacity) reserve(_size + len);
+		size_t end = _size + len;
+		while (end > pos + len - 1) _str[end] = _str[end - len], --end;
+		memcpy(_str + pos, str, len);
+		_size += len;
+	}
+	void string::erase(size_t pos, size_t len) {
+		if (len > _size - pos) _str[pos] = '\0', _size = pos;
+		else strcpy(_str + pos, _str + pos + len), _size -= len;
+	}
+	void string::swap(string& s) {
+		char* temp = _str;
+		_str = s._str;
+		s._str = temp;
+		std::swap(_size, s._size);
+	}
+	string string::substr(size_t pos, size_t len) {
+		if (len > _size - pos) { string sub(_str + pos); return sub; }
+		else {
+			string sub;
+			sub.reserve(len);
+			for (size_t i = pos; i < pos + len; i++) sub += _str[i];
+			return sub;
+		}
+	}
+	void swap(string& s1, string& s2){ s1.swap(s2); }
+	istream& operator>>(istream& ci, string& s) {
+		s.clear();
+		char ch = ci.get();
+		while (ch != ' ' && ch != '\n') s += ch, ch = ci.get();
+		return ci;
+	}
+	ostream& operator<<(ostream& co, string& s) {
+		for (size_t i = 0; i < s.size(); i++) co << s[i];
+		return co;
+	}
+}
